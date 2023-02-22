@@ -29,14 +29,26 @@ int ft_strn(char *s)
 char *get_next_line(int fd)
 {
 	static char *next; // static string next line [OPEN_MAX]
-	char *buffer; // return value [BUFFER_SIZE + 1]
+	char *str; // return value [BUFFER_SIZE + 1]
+	int size;
 	
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= OPEN_MAX)
 		return (0);
-	buffer = (char *) malloc(BUFFER_SIZE + 1);
-	if (!buffer)
+	str = (char *) malloc(BUFFER_SIZE + 1);
+	if (!str)
 		return (0);
-	if (!read(fd, buffer, BUFFER_SIZE))
+
+	// if (!read(fd, str, BUFFER_SIZE))
+	// 	return (0);
+	
+	while(!ft_strn(str))
+	{
+		size = read(fd, str, BUFFER_SIZE);
+		if (size <= 0)
+			break ;
+		readstr[size] = 0;
+		next[fd] = ft_strjoin(next[fd], str)
+	}
 
 }
 
