@@ -14,9 +14,10 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/_types/_ssize_t.h>
 
 
-int ft_strn(char *s)
+static int ft_strn(char *s)
 {
 	int i;
 
@@ -27,36 +28,40 @@ int ft_strn(char *s)
 	return (0);
 }
 
-char *ft_readandjoin(int fd) // returns result of joining existing result with buf when does not include '\n'
+static char *ft_readandjoin(int fd) // returns result of joining existing result with buf when does not include '\n'
 {
-	int size;
+	ssize_t size;
 	char *result;
 	char *temp;
 
 	size = 1;
-	while(!ft_strn(result) || !size)
+	while(size)
  	{
-		temp = (char *) malloc(BUFFER_SIZE + 1);
+		temp = (char *) malloc(BUFFER_SIZE);
 		if (!temp)
 		{
 			free(temp);
 			return (0);
 		}
- 		if (read(fd, temp, BUFFER_SIZE) <= 0) // el archivo ha terminado
+		size = read(fd, temp, BUFFER_SIZE);
+ 		if (size <= 0) // el archivo ha terminado
  			break ;
- 		result = ft_joinstr(result, temp);
+		temp[size] = 0;
+                result = ft_joinstr(result, temp);
  		if (!result)
  		{
  			free(result);
 			free(temp);
  			return (0);
 		}
+                if (ft_strn(temp))
+		        break ;
 	}
 	free(temp);
 	return (result);
 }
-
-char *ft_slice(char *str)
+/*
+static char *ft_slice(char *str)
 {
 	char *result;
 	int i;
@@ -73,12 +78,11 @@ char *ft_slice(char *str)
 	return (result);
 }
 
-char *ft_next_str(char *str)
+static char *ft_next_str(char *str)
 {
 	char *result;
 	int i;
 	size_t size;
-	int j;
 
 	i = -1;
 	result = 0;
@@ -95,17 +99,9 @@ char *ft_next_str(char *str)
 	}
 	free(str);
 	return (result);
-}
+}*/
 
-char *get_next_line(int fd)
-{
-	static char *saved; // static string next line [OPEN_MAX]
-	char *buf; // return value [BUFFER_SIZE + 1]
- 	
- 	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= OPEN_MAX)
- 		return (0);
-
- 	// 1 comprobar si saved tiene '\n'
+	// 1 comprobar si saved tiene '\n'
  	//	false: 
  	//		read(fd, str, BUFFER_SIZE) --> readandjoin
  	//		join(saved, str)
@@ -115,23 +111,33 @@ char *get_next_line(int fd)
 	//		guardar en una temporal hasta el '\n' incluido 
 	//		result = join temp con result
  	//		saved = after '\n'
-	
+
+char *get_next_line(int fd)
+{
+	static char *saved; // static string next line [OPEN_MAX]
+	char *buf; // return value [BUFFER_SIZE + 1]
+ 	
+ 	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= OPEN_MAX)
+ 		return (0);
 	saved = ft_readandjoin(fd);
-	printf("%s", saved);
 	if (!saved)
+	{
+		free(saved);
 		return (0);
-	buf = ft_slice(saved);
-	saved = ft_next_str(saved);
+	}
+	//buf = ft_slice(saved);
+	//saved = ft_next_str(saved);
+	buf = NULL;
 	return (buf);
 }
 
-int main()
-{
-	int fd = open("hola.txt", O_RDONLY);
-
-	char *str = get_next_line(fd);
-
-	printf("%s", str);
-	free(str);
-	return (0);
-}
+// int main()
+// {
+// 	int fd = open("hola.txt", O_RDONLY);
+//
+// 	char *str = get_next_line(fd);
+//
+// 	printf("%s", str);
+// 	free(str);
+// 	return (0);
+// }

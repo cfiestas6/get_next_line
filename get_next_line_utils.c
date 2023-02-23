@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdlib.h>
 
 size_t	ft_strlen(char const *str)
@@ -11,8 +12,8 @@ size_t	ft_strlen(char const *str)
 
 char	*ft_joinstr(char *s1, char *s2)
 {
-	int i;
-	int j;
+	size_t i;
+	size_t j;
 	char *result;
 
 	if (!s1 || !s2)
