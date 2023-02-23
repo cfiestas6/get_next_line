@@ -26,34 +26,55 @@ int ft_strn(char *s)
 	return (0);
 }
 
+char *ft_readandjoin() // returns result of joining existing result with buf when does not include '\n'
+{
+
+}
+
 char *get_next_line(int fd)
 {
-	static char *next; // static string next line [OPEN_MAX]
-	char *str; // return value [BUFFER_SIZE + 1]
-	int size;
-	
-	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= OPEN_MAX)
-		return (0);
-	str = (char *) malloc(BUFFER_SIZE + 1);
-	if (!str)
-		return (0);
+	static char *saved; // static string next line [OPEN_MAX]
+	char *buf; // return value [BUFFER_SIZE + 1]
+ 	char *result;
+ 	int size;
+ 	
+ 	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= OPEN_MAX)
+ 		return (0);
+ 	buf = (char *) malloc(BUFFER_SIZE + 1);
+ 	if (!buf)
+ 		return (0);
 
-	// if (!read(fd, str, BUFFER_SIZE))
-	// 	return (0);
-	
-	while(!ft_strn(str))
-	{
-		size = read(fd, str, BUFFER_SIZE);
-		if (size <= 0)
-			break ;
-		readstr[size] = 0;
-		next[fd] = ft_strjoin(next[fd], str)
+ 	// if (!read(fd, str, BUFFER_SIZE))
+ 	// 	return (0);
+ 	
+ 	// 1 comprobar si saved tiene '\n'
+ 	//	false: 
+ 	//		read(fd, str, BUFFER_SIZE)
+ 	//		join(saved, str)
+ 	//		volver al paso 1
+ 	//
+ 	//	true:
+ 	//		result = until '\n'
+ 	//		saved = after '\n'
+
+ 	while(!ft_strn(result))
+ 	{
+ 		if (read(fd, buf, BUFFER_SIZE) <= 0) // el archivo ha terminado
+ 			break ;
+ 		buf[size] = 0;
+ 		result = ft_joinstr(result, str);
+ 		if (!result)
+ 		{
+ 			free(result);
+ 			return (0);
+		}
 	}
 
 }
 
-// int main()
-// {
-// 	printf("%d", ft_line_end("hola que tal es\ntas"));
-// 	return (0);
-// }
+int main()
+{
+	printf("%s", ft_joinstr("hola", " que tal"));
+	return (0);
+}
+
