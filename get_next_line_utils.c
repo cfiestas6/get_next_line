@@ -16,7 +16,7 @@ char	*ft_joinstr(char *s1, char *s2)
 	size_t j;
 	char *result;
 
-	if (!s1 || !s2)
+	if (!s2)
 		return (0);
 	result = (char *) malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
 	if (!result)

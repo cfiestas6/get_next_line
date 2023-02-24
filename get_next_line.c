@@ -22,40 +22,43 @@ static int ft_strn(char *s)
 	int i;
 
 	i = -1;
-	while (s[++i])
+	while (s[++i] && s)
 		if (s[i] == '\n' || s[i] == '\0')
 			return (1);
 	return (0);
 }
 
-static char *ft_readandjoin(int fd) // returns result of joining existing result with buf when does not include '\n'
+static char *ft_readandjoin(int fd, char *result) // returns result of joining existing result with buf when does not include '\n'
 {
 	ssize_t size;
-	char *result;
 	char *temp;
 
+	temp = (char *) malloc(sizeof(char) * (BUFFER_SIZE + 1));
+        if (!temp)
+	{
+		free(temp);
+		return (0);
+	}
 	size = 1;
 	while(size)
  	{
-		temp = (char *) malloc(BUFFER_SIZE);
-		if (!temp)
+		
+		size = read(fd, temp, BUFFER_SIZE);
+ 		if (size <= 0) // el archivo ha terminado
 		{
 			free(temp);
 			return (0);
 		}
-		size = read(fd, temp, BUFFER_SIZE);
- 		if (size <= 0) // el archivo ha terminado
- 			break ;
 		temp[size] = 0;
                 result = ft_joinstr(result, temp);
  		if (!result)
  		{
- 			free(result);
+			printf("result da error");
 			free(temp);
  			return (0);
 		}
-                if (ft_strn(temp))
-		        break ;
+		if (ft_strn(temp))
+			break ;
 	}
 	free(temp);
 	return (result);
@@ -115,29 +118,29 @@ static char *ft_next_str(char *str)
 char *get_next_line(int fd)
 {
 	static char *saved; // static string next line [OPEN_MAX]
-	char *buf; // return value [BUFFER_SIZE + 1]
+	// char *buf; // return value [BUFFER_SIZE + 1]
  	
- 	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= OPEN_MAX)
- 		return (0);
-	saved = ft_readandjoin(fd);
-	if (!saved)
+ 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
 	{
 		free(saved);
+		saved = NULL;
 		return (0);
 	}
+	saved = ft_readandjoin(fd, saved);
+	if (!saved)
+		return (0);
+	printf("%s", saved);
 	//buf = ft_slice(saved);
 	//saved = ft_next_str(saved);
-	buf = NULL;
-	return (buf);
+	return (0);
 }
 
-// int main()
-// {
-// 	int fd = open("hola.txt", O_RDONLY);
-//
-// 	char *str = get_next_line(fd);
-//
-// 	printf("%s", str);
-// 	free(str);
-// 	return (0);
-// }
+int main()
+{
+	int fd = open("hola.txt", O_RDONLY);
+
+	get_next_line(fd);
+
+	// printf("%s", ft_readandjoin(fd));
+	return (0);
+}
