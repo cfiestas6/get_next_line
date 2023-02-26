@@ -51,7 +51,6 @@ static char *ft_readandjoin(int fd, char *result) // returns result of joining e
                 result = ft_joinstr(result, temp);
  		if (!result)
  		{
-			printf("result da error");
 			free(temp);
  			return (0);
 		}
@@ -75,7 +74,8 @@ static char *ft_slice(char *str)
                 i++;
 	}
 	if (str[i] == '\n')
-		result[i] = '\n';
+		result[i++] = '\n';
+	result[i] = 0;
 	return (result);
 }
 
@@ -85,11 +85,13 @@ static char *ft_next_str(char *str)
 	int i;
 	size_t size;
 
+	if (!str)
+		return (0);
 	i = -1;
 	result = 0;
 	while (str[++i])
 	{
-		if (str[i] == '\n' && str[i + 1])
+		if (str[i] == '\n' && str[i + 1] != '\0')
 		{
 			size = ft_strlen(str) - i;
 			result = (char *) malloc(size);
@@ -98,7 +100,6 @@ static char *ft_next_str(char *str)
 			ft_strlcpy(result, (str + i + 1), size); // que empiece a copiar desde el salto de linea
 		}
 	}
-	free(str);
 	return (result);
 }
 
@@ -132,7 +133,7 @@ char *get_next_line(int fd)
 	saved = ft_next_str(saved);
 	return (buf);
 }
-/*
+
 int main()
 {
 	int fd = open("test.txt", O_RDONLY);
@@ -144,5 +145,8 @@ int main()
 		stash = get_next_line(fd);
 	}
 
+	// printf("%s", ft_next_str("hola\nme l"));
+
+	free(stash);
 	return (0);
-}*/
+}
