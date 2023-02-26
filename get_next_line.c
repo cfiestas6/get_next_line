@@ -26,10 +26,11 @@ static int ft_strn(char *s)
 	return (0);
 }
 
-static char *ft_readandjoin(int fd, char *result) // returns result of joining existing result with buf when does not include '\n'
+static char *ft_readandjoin(int fd)
 {
 	ssize_t size;
 	char *temp;
+	char *result;
 
 	temp = (char *) malloc(sizeof(char) * (BUFFER_SIZE + 1));
         if (!temp)
@@ -42,19 +43,11 @@ static char *ft_readandjoin(int fd, char *result) // returns result of joining e
  	{
 		
 		size = read(fd, temp, BUFFER_SIZE);
- 		if (size <= 0) // el archivo ha terminado
-		{
-			free(temp);
-			return (0);
-		}
+ 		if (size <= 0)
+		        break ;
 		temp[size] = 0;
                 result = ft_joinstr(result, temp);
- 		if (!result)
- 		{
-			free(temp);
- 			return (0);
-		}
-		if (ft_strn(temp))
+ 		if (!result || ft_strn(temp))
 			break ;
 	}
 	free(temp);
@@ -74,8 +67,8 @@ static char *ft_slice(char *str)
                 i++;
 	}
 	if (str[i] == '\n')
-		result[i++] = '\n';
-	result[i] = 0;
+		result[i] = '\n';
+	result[++i] = 0;
 	return (result);
 }
 
@@ -97,7 +90,7 @@ static char *ft_next_str(char *str)
 			result = (char *) malloc(size);
 	                if (!result)
 				return (0);
-			ft_strlcpy(result, (str + i + 1), size); // que empiece a copiar desde el salto de linea
+			ft_strlcpy(result, (str + i + 1), size);
 		}
 	}
 	return (result);
@@ -116,19 +109,18 @@ static char *ft_next_str(char *str)
 
 char *get_next_line(int fd)
 {
-	static char *saved; // static string next line [OPEN_MAX]
-	char *buf; // return value [BUFFER_SIZE + 1]
- 	
+	static char *saved;
+	char *buf; 	
+
  	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
 	{
 		free(saved);
 		saved = NULL;
 		return (0);
 	}
-	saved = ft_readandjoin(fd, saved);
+	saved = ft_readandjoin(fd);
 	if (!saved)
 		return (0);
-	// printf("%s", saved);
 	buf = ft_slice(saved);
 	saved = ft_next_str(saved);
 	return (buf);
