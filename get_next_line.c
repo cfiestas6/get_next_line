@@ -14,8 +14,6 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/_types/_ssize_t.h>
-
 
 static int ft_strn(char *s)
 {
@@ -63,7 +61,7 @@ static char *ft_readandjoin(int fd, char *result) // returns result of joining e
 	free(temp);
 	return (result);
 }
-/*
+
 static char *ft_slice(char *str)
 {
 	char *result;
@@ -102,7 +100,7 @@ static char *ft_next_str(char *str)
 	}
 	free(str);
 	return (result);
-}*/
+}
 
 	// 1 comprobar si saved tiene '\n'
  	//	false: 
@@ -118,7 +116,7 @@ static char *ft_next_str(char *str)
 char *get_next_line(int fd)
 {
 	static char *saved; // static string next line [OPEN_MAX]
-	// char *buf; // return value [BUFFER_SIZE + 1]
+	char *buf; // return value [BUFFER_SIZE + 1]
  	
  	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
 	{
@@ -129,18 +127,22 @@ char *get_next_line(int fd)
 	saved = ft_readandjoin(fd, saved);
 	if (!saved)
 		return (0);
-	printf("%s", saved);
-	//buf = ft_slice(saved);
-	//saved = ft_next_str(saved);
-	return (0);
+	// printf("%s", saved);
+	buf = ft_slice(saved);
+	saved = ft_next_str(saved);
+	return (buf);
 }
-
+/*
 int main()
 {
-	int fd = open("hola.txt", O_RDONLY);
+	int fd = open("test.txt", O_RDONLY);
+	char *stash = get_next_line(fd);
 
-	get_next_line(fd);
+	while (stash)
+	{
+		printf("%s", stash);
+		stash = get_next_line(fd);
+	}
 
-	// printf("%s", ft_readandjoin(fd));
 	return (0);
-}
+}*/

@@ -6,6 +6,8 @@ size_t	ft_strlen(char const *str)
 	size_t	n;
 
 	n = 0;
+	if (!str)
+		return (0);
 	while (str[n++]);
 	return (n - 1);
 }
