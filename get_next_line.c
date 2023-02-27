@@ -59,6 +59,8 @@ static char *ft_slice(char *str)
 	char *result;
 	int i;
 
+	if (!str)
+		return (0);
 	result = (char *) malloc(ft_strlen(str) + 1);
 	i = 0;
 	while (str[i] && str[i] != '\n')
@@ -93,6 +95,7 @@ static char *ft_next_str(char *str)
 			ft_strlcpy(result, (str + i + 1), size);
 		}
 	}
+	free(str);
 	return (result);
 }
 
@@ -126,6 +129,7 @@ char *get_next_line(int fd)
 	return (buf);
 }
 
+/*
 int main()
 {
 	int fd = open("test.txt", O_RDONLY);
@@ -141,4 +145,4 @@ int main()
 
 	free(stash);
 	return (0);
-}
+}*/

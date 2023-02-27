@@ -3,7 +3,7 @@
 #endif
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 10
+# define BUFFER_SIZE 1
 #endif
 #include <stddef.h>
 #include <stdio.h>

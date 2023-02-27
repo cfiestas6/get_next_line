@@ -29,7 +29,7 @@ char	*ft_joinstr(char *s1, char *s2)
 		result[i] = s1[i];
 	while (j < ft_strlen(s2))
 		result[i++] = s2[j++];
-	result[i + j] = 0;
+	result[i] = 0;
 	return (result);
 }
 
