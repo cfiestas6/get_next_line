@@ -3,7 +3,7 @@
 #endif
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 1
+# define BUFFER_SIZE 3
 #endif
 #include <stddef.h>
 #include <stdio.h>
@@ -14,4 +14,4 @@
 size_t	ft_strlen(const char *str);
 char	*ft_joinstr(char const *s1, char const *s2);
 char *get_next_line(int fd);
-size_t ft_strlcpy(char *dst, const char *src, size_t dstsize);
+size_t ft_strlcpy(char *dst, char *src, size_t dstsize);

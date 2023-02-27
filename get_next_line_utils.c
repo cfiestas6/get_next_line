@@ -33,7 +33,7 @@ char	*ft_joinstr(char *s1, char *s2)
 	return (result);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
+size_t	ft_strlcpy(char *dst, char *src, size_t dstsize)
 {
 	size_t	srcsize;
 	size_t	i;
@@ -45,7 +45,6 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 		dst[i] = src[i];
 		i++;
 	}
-	if (dstsize != 0)
-		dst[i] = '\0';
+	dst[i] = '\0';
 	return (srcsize);
 }

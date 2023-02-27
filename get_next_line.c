@@ -34,14 +34,10 @@ static char *ft_readandjoin(int fd)
 
 	temp = (char *) malloc(sizeof(char) * (BUFFER_SIZE + 1));
         if (!temp)
-	{
-		free(temp);
 		return (0);
-	}
 	size = 1;
 	while(size)
  	{
-		
 		size = read(fd, temp, BUFFER_SIZE);
  		if (size <= 0)
 		        break ;
@@ -50,7 +46,9 @@ static char *ft_readandjoin(int fd)
  		if (!result || ft_strn(temp))
 			break ;
 	}
-	free(temp);
+	if (temp)
+		free(temp);
+	// printf("readandjoin = %s", result);
 	return (result);
 }
 
@@ -58,10 +56,15 @@ static char *ft_slice(char *str)
 {
 	char *result;
 	int i;
+	int j;
 
 	if (!str)
 		return (0);
-	result = (char *) malloc(ft_strlen(str) + 1);
+	j = 0;
+	while (str[j++] != '\n');
+	result = (char *) malloc(j + 1);
+	if (!result)
+		return (0);
 	i = 0;
 	while (str[i] && str[i] != '\n')
 	{
@@ -69,21 +72,19 @@ static char *ft_slice(char *str)
                 i++;
 	}
 	if (str[i] == '\n')
-		result[i] = '\n';
-	result[++i] = 0;
+		result[i++] = '\n';
+	result[i] = 0;
+	// printf("\nslice = %s\n", result);
 	return (result);
 }
 
 static char *ft_next_str(char *str)
 {
-	char *result;
-	int i;
-	size_t size;
+	char	*result;
+	int		i;
+	size_t	size;
 
-	if (!str)
-		return (0);
 	i = -1;
-	result = 0;
 	while (str[++i])
 	{
 		if (str[i] == '\n' && str[i + 1] != '\0')
@@ -91,29 +92,34 @@ static char *ft_next_str(char *str)
 			size = ft_strlen(str) - i;
 			result = (char *) malloc(size);
 	                if (!result)
+			{
+				free(str);
 				return (0);
-			ft_strlcpy(result, (str + i + 1), size);
+			}
+			ft_strlcpy(result, &str[i + 1], size);
 		}
 	}
-	free(str);
+	if (str)
+		free(str);
+	// printf("next str = %s\n", result);
 	return (result);
 }
 
-	// 1 comprobar si saved tiene '\n'
- 	//	false: 
- 	//		read(fd, str, BUFFER_SIZE) --> readandjoin
- 	//		join(saved, str)
- 	//		volver al paso 1
- 	//
- 	//	true:
-	//		guardar en una temporal hasta el '\n' incluido 
-	//		result = join temp con result
- 	//		saved = after '\n'
+// 1 comprobar si saved tiene '\n'
+//	false: 
+//		read(fd, str, BUFFER_SIZE) --> readandjoin
+//		join(saved, str)
+//		volver al paso 1
+//
+//	true:
+//		guardar en una temporal hasta el '\n' incluido 
+//		result = join temp con result
+//		saved = after '\n'
 
 char *get_next_line(int fd)
 {
-	static char *saved;
-	char *buf; 	
+	static char	*saved;
+	char		*buf;
 
  	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
 	{
@@ -129,20 +135,17 @@ char *get_next_line(int fd)
 	return (buf);
 }
 
-/*
 int main()
 {
 	int fd = open("test.txt", O_RDONLY);
-	char *stash = get_next_line(fd);
+	// char *stash = get_next_line(fd);
 
+	/*
 	while (stash)
 	{
 		printf("%s", stash);
 		stash = get_next_line(fd);
 	}
-
-	// printf("%s", ft_next_str("hola\nme l"));
-
-	free(stash);
+	free(stash);*/
 	return (0);
-}*/
+}
