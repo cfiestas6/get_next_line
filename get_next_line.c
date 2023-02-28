@@ -6,16 +6,13 @@
 /*   By: cfiestas <cfiestas@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/20 11:06:00 by cfiestas          #+#    #+#             */
-/*   Updated: 2023/02/20 11:06:03 by cfiestas         ###   ########.fr       */
+/*   Updated: 2023/02/28 19:42:38 by cfiestas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./get_next_line.h"
-#include <limits.h>
-#include <stdio.h>
-#include <stdlib.h>
 
-int ft_strn(char *s, int c)
+int	ft_strn(char *s, int c)
 {
 	int	i;
 
@@ -30,39 +27,39 @@ int ft_strn(char *s, int c)
 	return (0);
 }
 
-static char *ft_readandjoin(int fd, char *saved)
+static char	*ft_readandjoin(int fd, char *saved)
 {
-	ssize_t size;
-	char *temp;
+	ssize_t	size;
+	char	*temp;
 
 	temp = (char *) malloc(sizeof(char) * (BUFFER_SIZE + 1));
-        if (!temp)
+	if (!temp)
 		return (0);
 	size = 1;
-	while(!ft_strn(saved, '\n') && size)
- 	{
+	while (!ft_strn(saved, '\n') && size)
+	{
 		size = read(fd, temp, BUFFER_SIZE);
- 		if (size < 0)
+		if (size < 0)
 		{
 			free(temp);
 			return (0);
 		}
 		temp[size] = '\0';
-                saved = ft_joinstr(saved, temp);
+		saved = ft_joinstr(saved, temp);
 	}
 	free(temp);
 	return (saved);
 }
 
-static char *ft_slice(char *str)
+static char	*ft_slice(char *str)
 {
-	char *result;
-	int i;
+	char	*result;
+	int		i;
 
 	i = 0;
 	if (!str[i])
 		return (NULL);
-	while (str[i]!= '\n' && str[i] != '\0')
+	while (str[i] != '\n' && str[i] != '\0')
 		i++;
 	result = (char *) malloc((i + 2) * sizeof(char));
 	if (!result)
@@ -79,12 +76,12 @@ static char *ft_slice(char *str)
 	return (result);
 }
 
-static char *ft_next_str(char *str)
+static char	*ft_next_str(char *str)
 {
 	char	*result;
 	int		i;
-	int j;
-	
+	int		j;
+
 	i = 0;
 	while (str[i] && str[i] != '\n')
 		i++;
@@ -104,12 +101,12 @@ static char *ft_next_str(char *str)
 	return (result);
 }
 
-char *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
 	static char	*saved;
 	char		*buf;
 
- 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
 		free(saved);
 		saved = NULL;

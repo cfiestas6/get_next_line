@@ -1,5 +1,16 @@
-#include <stddef.h>
-#include <stdlib.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cfiestas <cfiestas@student.42madrid>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/02/28 20:00:07 by cfiestas          #+#    #+#             */
+/*   Updated: 2023/02/28 20:04:12 by cfiestas         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "./get_next_line_bonus.h"
 
 size_t	ft_strlen(char const *str)
 {
@@ -8,15 +19,16 @@ size_t	ft_strlen(char const *str)
 	n = 0;
 	if (!str)
 		return (0);
-	while (str[n++]);
-	return (n - 1);
+	while (str[n])
+		n++;
+	return (n);
 }
 
 char	*ft_joinstr(char *s1, char *s2)
 {
-	size_t i;
-	size_t j;
-	char *result;
+	size_t	i;
+	size_t	j;
+	char	*result;
 
 	if (!s1)
 	{
