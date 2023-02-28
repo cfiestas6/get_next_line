@@ -70,12 +70,12 @@ static char *ft_slice(char *str)
 	i = 0;
 	while (str[i] && str[i] != '\n')
 	{
-		result[i]= str[i];
+		result[i] = str[i];
 		i++;
 	}
 	if (str[i] == '\n')
-		result[i] = '\n';
-	result[++i] = '\0';
+		result[i++] = '\n';
+	result[i] = '\0';
 	return (result);
 }
 
@@ -125,17 +125,16 @@ char *get_next_line(int fd)
 
 // int main()
 // {
-// 	// int fd = open("test.txt", O_RDONLY);
-// 	// char *stash = get_next_line(fd);
-// 	// int i = 0;
-// 	//
-// 	// while (i++ < 5)
-// 	// {
-// 	// 	printf("%s", stash);
-// 	// 	stash = get_next_line(fd);
-// 	// }
-// 	// free(stash);
+// 	int fd = open("test3.txt", O_RDONLY);
+// 	char *stash = get_next_line(fd);
+// 	int i = 0;
+//
+// 	while (stash)
+// 	{
+// 		// printf("%s", stash);
+// 		stash = get_next_line(fd);
+// 	}
+// 	free(stash);
 // 	
-// 	printf("%d", ft_strn("hola\0"));
 // 	return (0);
 // }
