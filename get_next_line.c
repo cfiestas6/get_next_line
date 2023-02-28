@@ -15,66 +15,67 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static int ft_strn(char *s)
+int ft_strn(char *s, int c)
 {
-	int i;
+	int	i;
 
-	i = -1;
-	while (s[++i] && s)
-		if (s[i] == '\n' || s[i] == '\0')
+	i = 0;
+	if (!s)
+		return (0);
+	if (c == '\0')
+		return (1);
+	while (s[i] != '\0')
+		if (s[i++] == c)
 			return (1);
 	return (0);
 }
 
-static char *ft_readandjoin(int fd)
+static char *ft_readandjoin(int fd, char *saved)
 {
 	ssize_t size;
 	char *temp;
-	char *result;
 
 	temp = (char *) malloc(sizeof(char) * (BUFFER_SIZE + 1));
         if (!temp)
 		return (0);
 	size = 1;
-	while(size)
+	while(!ft_strn(saved, '\n') && size)
  	{
 		size = read(fd, temp, BUFFER_SIZE);
- 		if (size <= 0)
-		        break ;
-		temp[size] = 0;
-                result = ft_joinstr(result, temp);
- 		if (!result || ft_strn(temp))
-			break ;
+ 		if (size < 0)
+		{
+			free(temp);
+			return (0);
+		}
+		temp[size] = '\0';
+                saved = ft_joinstr(saved, temp);
 	}
-	if (temp)
-		free(temp);
-	// printf("readandjoin = %s", result);
-	return (result);
+	free(temp);
+	return (saved);
 }
 
 static char *ft_slice(char *str)
 {
 	char *result;
 	int i;
-	int j;
 
-	if (!str)
-		return (0);
-	j = 0;
-	while (str[j++] != '\n');
-	result = (char *) malloc(j + 1);
+	i = 0;
+	if (!str[i])
+		return (NULL);
+	while (str[i]!= '\n' && str[i] != '\0')
+		i++;
+	result = (char *) malloc((i + 2) * sizeof(char));
 	if (!result)
 		return (0);
 	i = 0;
 	while (str[i] && str[i] != '\n')
 	{
 		result[i]= str[i];
-                i++;
+		i++;
 	}
 	if (str[i] == '\n')
-		result[i++] = '\n';
-	result[i] = 0;
-	// printf("\nslice = %s\n", result);
+		result[i] = '\n';
+	result[++i] = '\0';
 	return (result);
 }
 
@@ -82,52 +83,39 @@ static char *ft_next_str(char *str)
 {
 	char	*result;
 	int		i;
-	size_t	size;
-
-	i = -1;
-	while (str[++i])
+	int j;
+	
+	i = 0;
+	while (str[i] && str[i] != '\n')
+		i++;
+	if (!str[i])
 	{
-		if (str[i] == '\n' && str[i + 1] != '\0')
-		{
-			size = ft_strlen(str) - i;
-			result = (char *) malloc(size);
-	                if (!result)
-			{
-				free(str);
-				return (0);
-			}
-			ft_strlcpy(result, &str[i + 1], size);
-		}
-	}
-	if (str)
 		free(str);
-	// printf("next str = %s\n", result);
+		return (NULL);
+	}
+	result = (char *) malloc(ft_strlen(str) - i + 1);
+	if (!result)
+		return (NULL);
+	j = 0;
+	while (str[++i])
+		result[j++] = str[i];
+	result[j] = '\0';
+	free(str);
 	return (result);
 }
-
-// 1 comprobar si saved tiene '\n'
-//	false: 
-//		read(fd, str, BUFFER_SIZE) --> readandjoin
-//		join(saved, str)
-//		volver al paso 1
-//
-//	true:
-//		guardar en una temporal hasta el '\n' incluido 
-//		result = join temp con result
-//		saved = after '\n'
 
 char *get_next_line(int fd)
 {
 	static char	*saved;
 	char		*buf;
 
- 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
+ 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
 		free(saved);
 		saved = NULL;
 		return (0);
 	}
-	saved = ft_readandjoin(fd);
+	saved = ft_readandjoin(fd, saved);
 	if (!saved)
 		return (0);
 	buf = ft_slice(saved);
@@ -135,17 +123,19 @@ char *get_next_line(int fd)
 	return (buf);
 }
 
-int main()
-{
-	int fd = open("test.txt", O_RDONLY);
-	// char *stash = get_next_line(fd);
-
-	/*
-	while (stash)
-	{
-		printf("%s", stash);
-		stash = get_next_line(fd);
-	}
-	free(stash);*/
-	return (0);
-}
+// int main()
+// {
+// 	// int fd = open("test.txt", O_RDONLY);
+// 	// char *stash = get_next_line(fd);
+// 	// int i = 0;
+// 	//
+// 	// while (i++ < 5)
+// 	// {
+// 	// 	printf("%s", stash);
+// 	// 	stash = get_next_line(fd);
+// 	// }
+// 	// free(stash);
+// 	
+// 	printf("%d", ft_strn("hola\0"));
+// 	return (0);
+// }
