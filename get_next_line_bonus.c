@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cfiestas <cfiestas@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/20 11:06:00 by cfiestas          #+#    #+#             */
-/*   Updated: 2023/02/20 11:06:03 by cfiestas         ###   ########.fr       */
+/*   Created: 2023/02/28 19:18:11 by cfiestas          #+#    #+#             */
+/*   Updated: 2023/02/28 19:19:06 by cfiestas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,19 +106,19 @@ static char *ft_next_str(char *str)
 
 char *get_next_line(int fd)
 {
-	static char	*saved;
+	static char	*saved[1024];
 	char		*buf;
 
  	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
-		free(saved);
-		saved = NULL;
+		free(saved[fd]);
+		saved[fd] = NULL;
 		return (0);
 	}
-	saved = ft_readandjoin(fd, saved);
-	if (!saved)
+	saved[fd] = ft_readandjoin(fd, saved[fd]);
+	if (!saved[fd])
 		return (0);
-	buf = ft_slice(saved);
-	saved = ft_next_str(saved);
+	buf = ft_slice(saved[fd]);
+	saved[fd] = ft_next_str(saved[fd]);
 	return (buf);
 }
